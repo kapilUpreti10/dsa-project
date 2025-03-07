@@ -5,7 +5,7 @@ from sys import exit
 import math
 import city_graph as ts
 import utility_func as utility_func
-from sound import load_and_play_city_sound, stop_sound
+from sound import load_and_play_city_sound, stop_sound,play_selected_sound
 from city_graph import coordinates
 
 pygame.init()
@@ -577,31 +577,35 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        
+
         if event.type == pygame.MOUSEMOTION:
-            #print(pygame.mouse.get_pos())
+            # print(pygame.mouse.get_pos())
             pass
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-
             for vehicle in vehicles[:]:
                 if vehicle.check_click(event.pos):
                     print("Clicked")
-                    vehicle.show_path= not vehicle.show_path
-            
+                    vehicle.show_path = not vehicle.show_path
 
             for vehicle in my_vehicle[:]:
                 if vehicle.check_click(event.pos):
                     print("Clicked")
-                    vehicle.show_path= not vehicle.show_path
+                    vehicle.show_path = not vehicle.show_path
 
-            if (menu.is_menu_bar_open): # only handle source destination logic if menu is opened
-                if (menu.click_count < 2): # user can click only twice i.e source and destination
-                    menu.handle_source_destination(event.pos)
-    
+            if (menu.is_menu_bar_open):  # only handle source destination logic if menu is opened
+                if (menu.click_count < 2):  # user can click only twice, i.e., source and destination
+                    if menu.click_count == 0:  # First click - Source
+                        menu.handle_source_destination(event.pos)
+                        play_selected_sound()  # Play sound for source selection
+                    elif menu.click_count == 1:  # Second click - Destination
+                        menu.handle_source_destination(event.pos)
+                        play_selected_sound()  # Play sound for destination selection
+
             if menu.menu_icon_rect.collidepoint(event.pos):
                 menu.show_text()
-                if not menu.is_menu_bar_open: menu.reset_state() #if it is just click reset state like click count=0 source,dest=-100
+                if not menu.is_menu_bar_open:
+                    menu.reset_state()  # Reset menu state if it is just clicked
                 menu.is_menu_bar_open = not menu.is_menu_bar_open
                 print("Rectangle clicked!")
 
