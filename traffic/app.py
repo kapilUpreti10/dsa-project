@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 from sys import exit
 import math
 import city_graph as ts
@@ -16,17 +17,20 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Traffic")
 
 #load font
-font=pygame.font.Font("traffic/src/fonts/small_pixel.ttf",22)
 
+font_path = os.path.join("src", "fonts", "small_pixel.ttf")
+font = pygame.font.Font(font_path, 22)
+#font = pygame.font.SysFont('Comic Sans MS', 40)
 #color
-TEXT_COL=(7, 250, 174)
+#TEXT_COL=(7, 250, 174)
+TEXT_COL = (255, 255, 255)  # White text color
 
 # Load images
-city_surface = pygame.image.load("traffic/src/images/city.jpg").convert_alpha()
-truck_surface = pygame.image.load("traffic/src/images/truck.png").convert_alpha()
-red_car_surface = pygame.image.load("traffic/src/images/redcar.png").convert_alpha()
-location_icon_surface = pygame.image.load("traffic/src/images/location_icon.png").convert_alpha()
-menu_bar_surface = pygame.image.load("traffic/src/images/menu_bar.png").convert_alpha()
+city_surface = pygame.image.load("./src/images/city.jpg").convert_alpha()
+truck_surface = pygame.image.load("./src/images/truck.png").convert_alpha()
+red_car_surface = pygame.image.load("./src/images/redcar.png").convert_alpha()
+location_icon_surface = pygame.image.load("./src/images/location_icon.png").convert_alpha()
+menu_bar_surface = pygame.image.load("./src/images/menu_bar.png").convert_alpha()
 
 
 #Transform images
@@ -48,6 +52,42 @@ spawn_timer = 0  # Timer for controlling vehicle spawn interval
 text_timer=0
 SPAWN_INTERVAL = 3000  # 3 seconds
 vehicle_id_counter=0
+
+# Home screen function
+def home_screen():
+    running = True
+    while running:
+        screen.fill((0, 0, 0))  # Black background
+        title_text = font.render("Traffic Simulation", True, TEXT_COL)
+        start_text = font.render("Start", True, TEXT_COL)
+        quit_text = font.render("Quit", True, TEXT_COL)
+        
+        screen.blit(title_text, (SCREEN_WIDTH//2 - 100, 300))
+        #start_rect = pygame.Rect(SCREEN_WIDTH//2 - 50, 400, 100, 40)
+        start_rect = pygame.Rect(SCREEN_WIDTH//2 - 65, 400, 150, 50)
+        quit_rect = pygame.Rect(SCREEN_WIDTH//2 - 50, 460, 100, 40)
+        
+        pygame.draw.rect(screen, (50, 200, 50), start_rect)
+        pygame.draw.rect(screen, (200, 50, 50), quit_rect)
+        
+        screen.blit(start_text, (SCREEN_WIDTH//2 - 25, 410))
+        screen.blit(quit_text, (SCREEN_WIDTH//2 - 25, 470))
+        
+        pygame.display.update()
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if start_rect.collidepoint(event.pos):
+                    running = False  # Exit home screen and start the game
+                if quit_rect.collidepoint(event.pos):
+                    pygame.quit()
+                    exit()
+
+# Run home screen first
+home_screen()
 
 def draw_text(text,font,text_col):
     global text_timer
