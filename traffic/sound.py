@@ -23,6 +23,6 @@ def stop_sound(city_sound):
     city_sound.stop()
 
 def play_selected_sound():
-    selected_sound = pygame.mixer.Sound("./src/sound/select_sound.wav")
+    selected_sound = pygame.mixer.Sound("./src/sound/select_sound.mp3")
     selected_sound.play()
 
