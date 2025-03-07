@@ -5,6 +5,7 @@ from sys import exit
 import math
 import city_graph as ts
 import utility_func as utility_func
+from sound import load_and_play_city_sound, stop_sound
 from city_graph import coordinates
 
 pygame.init()
@@ -56,6 +57,8 @@ vehicle_id_counter=0
 # Home screen function
 def home_screen():
     running = True
+    city_sound = None  # Start with no sound playing
+
     while running:
         screen.fill((0, 0, 0))  # Black background
         title_text = font.render("Traffic Simulation", True, TEXT_COL)
@@ -63,28 +66,37 @@ def home_screen():
         quit_text = font.render("Quit", True, TEXT_COL)
         
         screen.blit(title_text, (SCREEN_WIDTH//2 - 100, 300))
-        #start_rect = pygame.Rect(SCREEN_WIDTH//2 - 50, 400, 100, 40)
-        start_rect = pygame.Rect(SCREEN_WIDTH//2 - 65, 400, 150, 50)
-        quit_rect = pygame.Rect(SCREEN_WIDTH//2 - 50, 460, 100, 40)
+        start_rect = pygame.Rect(SCREEN_WIDTH//2 - 65, 400, 150, 50)  # Start button
+        quit_rect = pygame.Rect(SCREEN_WIDTH//2 - 50, 460, 100, 40)  # Quit button
         
-        pygame.draw.rect(screen, (50, 200, 50), start_rect)
-        pygame.draw.rect(screen, (200, 50, 50), quit_rect)
+        # Draw buttons
+        pygame.draw.rect(screen, (50, 200, 50), start_rect)  # Green for start
+        pygame.draw.rect(screen, (200, 50, 50), quit_rect)  # Red for quit
         
-        screen.blit(start_text, (SCREEN_WIDTH//2 - 25, 410))
-        screen.blit(quit_text, (SCREEN_WIDTH//2 - 25, 470))
+        # Draw text
+        screen.blit(start_text, (SCREEN_WIDTH//2 - start_text.get_width()//2, 410))  # Center text
+        screen.blit(quit_text, (SCREEN_WIDTH//2 - quit_text.get_width()//2, 470))  # Center text
         
         pygame.display.update()
-        
+
+        # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_rect.collidepoint(event.pos):
+                    if city_sound is None:  # Start sound if not already playing
+                        city_sound = load_and_play_city_sound()  # Play sound after start button is clicked
                     running = False  # Exit home screen and start the game
                 if quit_rect.collidepoint(event.pos):
                     pygame.quit()
                     exit()
+
+    # # Stop the city sound when exiting the home screen
+    # if city_sound is not None:
+    #     stop_sound(city_sound)
+
 
 # Run home screen first
 home_screen()
